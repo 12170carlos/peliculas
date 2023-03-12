@@ -48,14 +48,19 @@ function useSearch () {
 
 function App() {
 
+  const [ sort, setSort ]  = useState(false)
   const { search, updateSearch, error } = useSearch();
-  const  { movies: templateMovies, getMovies } = useMovies({ search });
+  const  { movies: templateMovies, loading, getMovies } = useMovies({ search, sort });
   
 
+  const handleSort = () => {
+    setSort(!sort)
+  }
+  
   const handleSubmit = (event) => {
     event.preventDefault()
        
-    getMovies()
+    getMovies({ search })
   }
 
   const handleChange = (event) => {
@@ -73,6 +78,7 @@ function App() {
         <form className="form" onSubmit={handleSubmit}>
           <input onChange={handleChange} value={search} name="search" placeholder="Avengers, Star Wars, The Matriz..." />
           
+          <input type='checkbox' onChange={handleSort} checked={sort}></input>
           <button 
             disabled={error}
             type="submit">Buscar</button>
@@ -81,7 +87,12 @@ function App() {
       </header>
     
       <main>
+        {
+          loading ? <p>Cargando...</p>
+          :
+
         <Movies movies={templateMovies} />
+        }
         
       </main>
     </div>
